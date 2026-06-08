@@ -8,7 +8,7 @@ export function LoginPage() {
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-900">Disponibilité des bureaux</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Connecte-toi avec ton compte Alloprof pour voir les espaces disponibles.
+          Connecte-toi avec ton compte Google pour voir les espaces disponibles.
         </p>
       </div>
       <button
