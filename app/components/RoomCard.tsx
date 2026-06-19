@@ -2,19 +2,28 @@
 
 import { CalendarResource } from "@/app/api/resources/route";
 import { ResourceAvailability } from "@/app/api/availability/route";
+import { buildGCalUrl } from "@/lib/gcal";
 
 interface Props {
   resource: CalendarResource;
   availability: ResourceAvailability | undefined;
   loading: boolean;
+  selectedTime?: string;
 }
 
-export function RoomCard({ resource, availability, loading }: Props) {
+export function RoomCard({ resource, availability, loading, selectedTime }: Props) {
   const status = availability?.status;
+  const isClickable = !loading && status === "free" && selectedTime;
+
+  const handleClick = () => {
+    if (!isClickable) return;
+    window.open(buildGCalUrl(resource.email, resource.name, selectedTime), "_blank");
+  };
 
   return (
     <div
-      className={`rounded-xl border p-4 flex flex-col gap-2 transition-colors ${
+      onClick={handleClick}
+      className={`rounded-xl border p-4 flex flex-col gap-2 transition-colors ${isClickable ? "cursor-pointer" : ""} ${
         loading
           ? "border-gray-200 bg-gray-50"
           : status === "free"

@@ -177,6 +177,7 @@ export function Dashboard() {
           resources={workspaces}
           availability={availMap}
           loading={loadingAvailability}
+          selectedTime={selectedTime}
         />
       ) : currentBuilding && workspaces.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -186,6 +187,7 @@ export function Dashboard() {
               resource={r}
               availability={availMap.get(r.email)}
               loading={loadingAvailability}
+              selectedTime={selectedTime}
             />
           ))}
         </div>
