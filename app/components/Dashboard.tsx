@@ -137,7 +137,7 @@ export function Dashboard() {
             type="datetime-local"
             value={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
-            className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm text-gray-900 border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <button
