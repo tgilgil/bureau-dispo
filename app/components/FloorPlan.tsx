@@ -3,14 +3,16 @@
 import { CalendarResource } from "@/app/api/resources/route";
 import { ResourceAvailability } from "@/app/api/availability/route";
 import { MTL_FLOORPLAN, DeskSpot } from "@/lib/mtl-floorplan";
+import { buildGCalUrl } from "@/lib/gcal";
 
 interface Props {
   resources: CalendarResource[];
   availability: Map<string, ResourceAvailability>;
   loading: boolean;
+  selectedTime: string;
 }
 
-export function FloorPlan({ resources, availability, loading }: Props) {
+export function FloorPlan({ resources, availability, loading, selectedTime }: Props) {
   // Match resources by "Bureau #N" pattern inferred from desk id
   const resourceByDeskId = new Map(
     resources.map((r) => {
@@ -46,6 +48,7 @@ export function FloorPlan({ resources, availability, loading }: Props) {
                       resource={resource}
                       availability={avail}
                       loading={loading}
+                      selectedTime={selectedTime}
                     />
                   );
                 })}
@@ -79,14 +82,17 @@ function DeskCell({
   resource,
   availability,
   loading,
+  selectedTime,
 }: {
   desk: DeskSpot;
   resource: CalendarResource | undefined;
   availability: ResourceAvailability | undefined;
   loading: boolean;
+  selectedTime: string;
 }) {
   const status = availability?.status;
   const isPortrait = desk.orientation === "portrait";
+  const isClickable = !loading && status === "free" && resource;
 
   const colorClass = loading
     ? "bg-gray-100 border-gray-300 animate-pulse"
@@ -101,15 +107,22 @@ function DeskCell({
   const label = resource?.name ?? `#${desk.id}`;
   const shortLabel = label.replace(/bureau\s*/i, "").trim() || `${desk.id}`;
 
+  const handleClick = () => {
+    if (!isClickable) return;
+    window.open(buildGCalUrl(resource.email, label, selectedTime), "_blank");
+  };
+
   return (
     <div
+      onClick={handleClick}
       title={
         resource
-          ? `${label}${availability?.currentOccupant ? ` · ${availability.currentOccupant}` : ""}`
+          ? `${label}${availability?.currentOccupant ? ` · ${availability.currentOccupant}` : ""}${isClickable ? " — Cliquer pour réserver" : ""}`
           : `Position ${desk.id} — non configurée`
       }
       className={`
-        border-2 rounded-lg flex flex-col items-center justify-center transition-colors cursor-default select-none
+        border-2 rounded-lg flex flex-col items-center justify-center transition-colors select-none
+        ${isClickable ? "cursor-pointer" : "cursor-default"}
         ${isPortrait ? "w-16 h-28" : "w-28 h-14"}
         ${colorClass}
       `}
